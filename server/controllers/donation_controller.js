@@ -326,3 +326,15 @@ exports.allDonation = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+// ---------------------------------------------------------------- search donations ----------------------------------------------------
+exports.searchdonation = async (req, res) => {
+  const { search } = req.body;
+  try {
+    const donationsearch = await donationmodel.searchdonation(search);
+    res.json(donationsearch);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send(err.message);
+  }
+};

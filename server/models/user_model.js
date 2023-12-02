@@ -20,6 +20,18 @@ module.exports = {
       throw err;
     }
   },
+  searchuser: async (search) => {
+    try {
+      const query = `SELECT * FROM users WHERE
+      LOWER(username) LIKE '%' || LOWER($1) || '%' OR 
+      LOWER(email) LIKE '%' || LOWER($1) || '%';
+      `;
+      const results = await db.query(query, [search]);
+      return results.rows;
+    } catch (err) {
+      throw err;
+    }
+  },
   // getUserDetails: async (page, limit) => {
   //   try {
   //     if (page <= 0 || limit <= 0) {

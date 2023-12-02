@@ -3,7 +3,7 @@ const db = require("./db");
 
 module.exports = {
   getDonation: async () => {
-    const query = `select *,donation.imageurl , donation.city from donation 
+    const query = `select users.user_id, users.username, users.industry, donation.* from donation 
     inner join users on donation.user_id = users.user_id
     where donation.is_deleted = false and donation.status = 'approved'
     -- order by date desc ,time desc 
@@ -212,7 +212,7 @@ module.exports = {
 
   getDonationById: async (id) => {
     const donation = await db.query(
-      `select *,donation.imageurl from donation 
+      `select users.user_id, users.username, users.industry, donation.* from donation 
       inner join users on donation.user_id = users.user_id 
       where donation_id = $1 and donation.is_deleted = false`,
       [id]
@@ -305,5 +305,16 @@ module.exports = {
     order by donation.donation_id LIMIT $2 OFFSET $3`;
     const result = await db.query(query, [status, limit, offset]);
     return result.rows;
+  },
+  searchdonation: async (search) => {
+    try {
+      const query = `SELECT * FROM donation WHERE
+      LOWER(type) LIKE '%' || LOWER($1) || '%' ;
+      `;
+      const results = await db.query(query, [search]);
+      return results.rows;
+    } catch (err) {
+      throw err;
+    }
   },
 };

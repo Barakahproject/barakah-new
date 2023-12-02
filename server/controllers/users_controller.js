@@ -133,6 +133,19 @@ exports.getUserDetails = async (req, res) => {
     res.status(500).send(err.message);
   }
 };
+
+// ---------------------------------------------------------------- search users ----------------------------------------------------
+exports.searchuser = async (req, res) => {
+  const { search } = req.body;
+  try {
+    const usersearch = await userModel.searchuser(search);
+    res.json(usersearch);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send(err.message);
+  }
+};
+
 // // ----------------------------------------------------------------all user details-----------------------------------------------
 // exports.getUserDetails = async (req, res) => {
 //   try {
