@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import {
   Card,
@@ -12,9 +12,19 @@ import {
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 // Define the table head
-const TABLE_HEAD = ["User", "Role", "City", "Phone", "Created at", "Action"];
+const TABLE_HEAD = [
+  "Order ID",
+  "Provider Name",
+  "Provider Location",
+  "Provider Phone",
+  "Collection Time",
+  "Receiver Name",
+  "Receiver Location",
+  "Receiver Phone",
+  "Action",
+];
 
-const Users = () => {
+const OrdersTable = () => {
   // State to store table rows, search term, and pagination
   const [tableRows, setTableRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,14 +43,15 @@ const Users = () => {
         console.error("Error fetching data:", error);
       });
   }, []);
+
   // Fetch data from API when component mounts or when pagination changes
   useEffect(() => {
     // Make an Axios request to your API endpoint with pagination parameters
-    Axios.get(`http://localhost:5000/alluser?page=${currentPage}`, {})
+    Axios.get(`http://localhost:5000/getconfirm`)
       .then((response) => {
         // Assuming the API response has a data property that contains the rows
         setTableRows(response.data);
-        console.log(response);
+        console.log(response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -48,33 +59,64 @@ const Users = () => {
   }, [currentPage, itemsPerPage]); // The effect runs when currentPage or itemsPerPage changes
 
   // Handle delete button click
-  const handleDelete = (user_id) => {
+  const handleDelete = (order_id) => {
     // Add your delete logic here
-    Axios.put(`http://localhost:5000/deleteuser/${user_id}`)
+    Axios.put(`http://localhost:5000/deleteorder/${order_id}`)
       .then((response) => {
-        console.log(`Deleting user with id ${user_id}`);
+        console.log(`Deleting order with id ${order_id}`);
       })
       .catch((error) => {});
   };
 
   // Filter the table rows based on the search term
   const filteredRows = tableRows.filter((row) => {
-    // Only search in the 'username' field
-    const username = row["username"];
-
-    return (
-      username &&
-      username.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // // Only search in the relevant fields
+    // const providerName = row["provider_name"];
+    // const providerLocation = row["provider_location"];
+    // const providerPhone = row["provider_phone"];
+    // const receiverName = row["receiver_name"];
+    // const receiverLocation = row["receiver_location"];
+    // const receiverPhone = row["receiver_phone"];
+    // return (
+    //   (providerName &&
+    //     providerName
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (providerLocation &&
+    //     providerLocation
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (providerPhone &&
+    //     providerPhone
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (receiverName &&
+    //     receiverName
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (receiverLocation &&
+    //     receiverLocation
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (receiverPhone &&
+    //     receiverPhone
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase()))
+    // );
   });
+
   // Calculate pagination info
-  // const totalItems = 40;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
     <div>
       {/* Add the search input field */}
-
       <Input
         type="text"
         placeholder="Search..."
@@ -83,7 +125,7 @@ const Users = () => {
         className="bg-white w-[300px] border border-blue ml-[20%] "
       />
 
-      <Card className="h-full w-[80%] mt-8 ml-[20%]  bg-blue-gray-50/50 ">
+      <Card className="h-full w-[80%] mt-8 ml-[20%]  bg-blue-gray-50/50 overflow-auto ">
         <CardBody className="px-0">
           <table className="mt-4 w-full min-w-max table-auto text-left ">
             <thead className="bg-white">
@@ -101,90 +143,31 @@ const Users = () => {
               {filteredRows.map(
                 (
                   {
-                    imageurl,
+                    confirm_id,
                     username,
-                    email,
-                    role_id,
-                    industry,
-                    city,
-                    phone,
-                    created_at,
-                    user_id,
+                    provider_location,
+                    provider_phone,
+                    collectiontime,
+                    receiver_name,
+                    receiver_location,
+                    receiver_phone,
                   },
                   index
                 ) => {
-                  const roleLabel =
-                    role_id === 1
-                      ? "admin"
-                      : role_id === 2
-                      ? "recycling agency"
-                      : role_id === 3
-                      ? "provider"
-                      : role_id === 4
-                      ? "charity"
-                      : "";
                   const isEvenRow = index % 2 === 0;
                   const classes = isEvenRow
                     ? "p-4 bg-blue-gray-50"
                     : "p-4 bg-white border-b border-blue-gray-50";
 
                   return (
-                    <tr key={email} className={classes}>
+                    <tr key={confirm_id} className={classes}>
                       <td className={classes}>
-                        <div className="flex items-center gap-3">
-                          <Avatar src={imageurl} alt={username} size="sm" />
-                          <div className="flex flex-col">
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {username}
-                            </Typography>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal opacity-70"
-                            >
-                              {email}
-                            </Typography>
-                          </div>
-                        </div>
-                      </td>
-                      <td className={classes}>
-                        <div className="flex flex-col">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal "
-                          >
-                            {roleLabel}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal opacity-70"
-                          >
-                            {industry}
-                          </Typography>
-                        </div>
-                      </td>
-                      <td>
                         <Typography
                           variant="small"
                           color="blue-gray"
-                          className="font-normal opacity-70 "
+                          className="font-normal"
                         >
-                          {city}
-                        </Typography>
-                      </td>
-                      <td>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal opacity-70"
-                        >
-                          {phone}
+                          {confirm_id}
                         </Typography>
                       </td>
                       <td className={classes}>
@@ -193,14 +176,68 @@ const Users = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {created_at}
+                          {username}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal opacity-70"
+                        >
+                          {provider_location}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal opacity-70"
+                        >
+                          {provider_phone}
                         </Typography>
                       </td>
                       <td className={classes}>
-                        <Tooltip content="Delete User">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {collectiontime}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {receiver_name}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {receiver_location}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {receiver_phone}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Tooltip content="Delete Order">
                           <IconButton
                             variant="text"
-                            onClick={() => handleDelete(user_id)}
+                            onClick={() => handleDelete(confirm_id)}
                           >
                             <TrashIcon className="h-4 w-4" />
                           </IconButton>
@@ -234,7 +271,7 @@ const Users = () => {
             setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages + 1))
           }
           disabled={currentPage === totalPages}
-          className="ml-4 bg-blue hover:bg-blue-600 text-white cursor-pointer px-4 py-2 rounded focus:outline-none"
+          className="ml-4 bg-blue hover-bg-blue-600 text-white cursor-pointer px-4 py-2 rounded focus:outline-none"
         >
           Next
         </button>
@@ -243,4 +280,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default OrdersTable;

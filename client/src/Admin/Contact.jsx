@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import Details from "./Details";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import {
   Card,
@@ -8,86 +7,80 @@ import {
   Avatar,
   IconButton,
   Tooltip,
-  Button,
   Input,
 } from "@material-tailwind/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
-// Define the table head for posts
-const POSTS_TABLE_HEAD = [
-  "Food Type",
-  "Username",
-  "Created Time",
-  "status",
-  "Action",
-];
+// Define the table head
+const TABLE_HEAD = ["Subject", "User", "Email", "Message", "Sent at", "Action"];
 
-const Posts = () => {
-  const [postsTableRows, setPostsTableRows] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState(null);
+const ContactTable = () => {
+  // State to store table rows, search term, and pagination
+  const [tableRows, setTableRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const openModal = (post) => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setSelectedPost(null);
-    setIsModalOpen(false);
-  };
-
   useEffect(() => {
-    Axios.get(`http://localhost:5000/sortdonation?page=1`)
+    // Make an Axios request to your API endpoint with pagination parameters
+    Axios.get("http://localhost:5000/countallcontacts")
       .then((response) => {
-        setTotalItems(response.data.length);
+        // Assuming the API response has a data property that contains the rows
+        setTotalItems(response.data[0].count);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   }, []);
 
+  // Fetch data from API when component mounts or when pagination changes
   useEffect(() => {
-    Axios.get(`http://localhost:5000/sortdonation?page=${currentPage}`)
+    // Make an Axios request to your API endpoint with pagination parameters
+    Axios.get(`http://localhost:5000/getcontact`, {})
       .then((response) => {
-        setPostsTableRows(response.data);
+        // Assuming the API response has a data property that contains the rows
+        setTableRows(response.data);
+        console.log(response);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [currentPage, itemsPerPage]);
+  }, [currentPage, itemsPerPage]); // The effect runs when currentPage or itemsPerPage changes
 
-  const handleDelete = (donation_id) => {
-    Axios.put(`http://localhost:5000/deletedonation/${donation_id}`)
+  // Handle delete button click
+  const handleDelete = (contact_id) => {
+    // Add your delete logic here
+    Axios.put(`http://localhost:5000/deletecontact/${contact_id}`)
       .then((response) => {
-        console.log(`Deleting donation with id ${donation_id}`);
+        console.log(`Deleting contact with id ${contact_id}`);
       })
       .catch((error) => {});
   };
 
-  const filteredRows = postsTableRows.filter((row) => {
-    const type = row["type"];
+  // Filter the table rows based on the search term
+  const filteredRows = tableRows.filter((row) => {
+    // Only search in the 'subject', 'username', and 'email' fields
+    const subject = row["subject"];
     const username = row["username"];
-    const status = row["status"];
+    const email = row["email"];
 
     return (
-      (type &&
-        type.toString().toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (subject &&
+        subject.toString().toLowerCase().includes(searchTerm.toLowerCase())) ||
       (username &&
         username.toString().toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (status &&
-        status.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+      (email &&
+        email.toString().toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
 
+  // Calculate pagination info
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
     <div>
+      {/* Add the search input field */}
       <Input
         type="text"
         placeholder="Search..."
@@ -96,21 +89,14 @@ const Posts = () => {
         className="bg-white w-[300px] border border-blue ml-[20%] "
       />
 
-      <Card className="h-full  mt-8 ml-[20%] w-[80%] ">
+      <Card className="h-full w-[80%] mt-8 ml-[20%]  bg-blue-gray-50/50 ">
         <CardBody className="px-0">
-          <table className="w-full min-w-max table-auto text-center">
-            <thead>
+          <table className="mt-4 w-full min-w-max table-auto text-left ">
+            <thead className="bg-white">
               <tr>
-                {POSTS_TABLE_HEAD.map((head) => (
-                  <th
-                    key={head}
-                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
-                  >
-                    <Typography
-                      variant="small"
-                      color="blue"
-                      className="text-md leading-none opacity-70 font-bold text-blue"
-                    >
+                {TABLE_HEAD.map((head) => (
+                  <th key={head} className=" bg-blue-gray p-4">
+                    <Typography className="text-md leading-none font-semibold text-blue">
                       {head}
                     </Typography>
                   </th>
@@ -120,7 +106,7 @@ const Posts = () => {
             <tbody>
               {filteredRows.map(
                 (
-                  { type, username, role_id, date, donation_id, status },
+                  { subject, name, email, message, submitted_at, contact_id },
                   index
                 ) => {
                   const isEvenRow = index % 2 === 0;
@@ -129,61 +115,61 @@ const Posts = () => {
                     : "p-4 bg-white border-b border-blue-gray-50";
 
                   return (
-                    <tr key={donation_id} className={classes}>
+                    <tr key={contact_id} className={classes}>
                       <td className={classes}>
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {type}
+                          {subject}
                         </Typography>
                       </td>
                       <td className={classes}>
-                        <div className="flex flex-col">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal "
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {name}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal opacity-70"
+                        >
+                          {email}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal opacity-70"
+                        >
+                          {message}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {submitted_at}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Tooltip content="Delete Contact">
+                          <IconButton
+                            variant="text"
+                            onClick={() => handleDelete(contact_id)}
                           >
-                            {username}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal opacity-70"
-                          >
-                            {role_id}
-                          </Typography>
-                        </div>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {date}
-                        </Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {status}
-                        </Typography>
-                      </td>
-
-                      <td className={classes}>
-                        <Button
-                          color="blue"
-                          className="bg-blue"
-                          onClick={() => openModal(donation_id)}
-                        >
-                          Show Details
-                        </Button>
+                            <TrashIcon className="h-4 w-4" />
+                          </IconButton>
+                        </Tooltip>
                       </td>
                     </tr>
                   );
@@ -192,13 +178,6 @@ const Posts = () => {
             </tbody>
           </table>
         </CardBody>
-        {isModalOpen && (
-          <Details
-            showModal={isModalOpen}
-            onClose={closeModal}
-            id={selectedPost}
-          />
-        )}
       </Card>
 
       {/* Pagination controls */}
@@ -217,7 +196,7 @@ const Posts = () => {
         </span>
         <button
           onClick={() =>
-            setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))
+            setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages + 1))
           }
           disabled={currentPage === totalPages}
           className="ml-4 bg-blue hover:bg-blue-600 text-white cursor-pointer px-4 py-2 rounded focus:outline-none"
@@ -229,4 +208,4 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default ContactTable;
