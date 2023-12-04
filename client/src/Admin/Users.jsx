@@ -22,7 +22,6 @@ const Users = () => {
   const [totalItems, setTotalItems] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-<<<<<<< HEAD
   // useEffect(() => {
   //   // Make an Axios request to your API endpoint with pagination parameters
   //   Axios.get("http://localhost:5000/countalluser")
@@ -45,27 +44,6 @@ const Users = () => {
         setTotalItems(response.data[0].total_count);
 
         console.log(response.data[0].total_count);
-=======
-  useEffect(() => {
-    // Make an Axios request to your API endpoint with pagination parameters
-    Axios.get("http://localhost:5000/countalluser")
-      .then((response) => {
-        // Assuming the API response has a data property that contains the rows
-        setTotalItems(response.data[0].count);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-  // Fetch data from API when component mounts or when pagination changes
-  useEffect(() => {
-    // Make an Axios request to your API endpoint with pagination parameters
-    Axios.get(`http://localhost:5000/alluser?page=${currentPage}`, {})
-      .then((response) => {
-        // Assuming the API response has a data property that contains the rows
-        setTableRows(response.data);
-        console.log(response);
->>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -78,7 +56,6 @@ const Users = () => {
     Axios.put(`http://localhost:5000/deleteuser/${user_id}`)
       .then((response) => {
         console.log(`Deleting user with id ${user_id}`);
-<<<<<<< HEAD
         
       })
       .catch((error) => {});
@@ -108,30 +85,11 @@ const Users = () => {
 
 
 
-=======
-      })
-      .catch((error) => {});
-  };
-
-  // Filter the table rows based on the search term
-  const filteredRows = tableRows.filter((row) => {
-    // Only search in the 'username' field
-    const username = row["username"];
-
-    return (
-      username &&
-      username.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
-  // Calculate pagination info
-  // const totalItems = 40;
->>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
     <div>
       {/* Add the search input field */}
-<<<<<<< HEAD
 <div className="w-1/4 flex ml-[20%]">      
 <Input
   type="text"
@@ -143,16 +101,6 @@ const Users = () => {
   className="bg-white w-[300px] border border-blue "
 /></div>
 
-=======
-
-      <Input
-        type="text"
-        placeholder="Search..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="bg-white w-[300px] border border-blue ml-[20%] "
-      />
->>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
 
       <Card className="h-full w-[80%] mt-8 ml-[20%]  bg-blue-gray-50/50 ">
         <CardBody className="px-0">
