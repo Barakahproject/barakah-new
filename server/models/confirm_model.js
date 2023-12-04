@@ -167,12 +167,17 @@ module.exports = {
       throw err;
     }
   },
-  getConfirmHistoryall: async (user_id) => {
+  getConfirmHistoryall: async (page, limit, search) => {
     try {
-      const result = await db.query(
-        `SELECT 
+      if (page <= 0 || limit <= 0) {
+        throw new Error("Invalid page or limit parameter");
+      }
+      const offset = (page - 1) * limit;
+      if (search) {
+        const result = await db.query(
+          `SELECT 
         confirmorder.*, users.username AS donationn, users_request.username AS requestn,
-        orders.order_city, orders.phone as orderphone
+        orders.order_city, orders.phone as orderphone,donation.type, COUNT(*) OVER () as total_count
       FROM 
         confirmorder
       INNER JOIN
@@ -184,13 +189,48 @@ module.exports = {
       INNER JOIN
         users AS users_request ON confirmorder.user_idrequest = users_request.user_id
       WHERE 
-        donation.is_deleted = true AND orders.is_deleted = true and confirmorder.is_deleted=false;
-      `
-      );
-      if (!result.rowCount) {
-        throw new Error("Order not found");
+	    LOWER(donation.type) LIKE '%' || LOWER($3) || '%'
+      and
+      donation.is_deleted = true AND orders.is_deleted = true and confirmorder.is_deleted=false
+	    order by accept_time desc LIMIT $1 OFFSET $2;
+      `,
+          [limit, offset, search]
+        );
+        if (!result.rowCount) {
+          throw new Error("Order not found");
+        }
+        return result.rows;
+      } else {
+        if (page <= 0 || limit <= 0) {
+          throw new Error("Invalid page or limit parameter");
+        }
+        const offset = (page - 1) * limit;
+        const result = await db.query(
+          `
+      SELECT 
+        confirmorder.*, users.username AS donationn, users_request.username AS requestn,
+        orders.order_city, orders.phone as orderphone,donation.type, COUNT(*) OVER () as total_count
+      FROM 
+        confirmorder
+      INNER JOIN
+        users ON confirmorder.user_iddonation = users.user_id
+      INNER JOIN 
+        orders ON confirmorder.order_id = orders.order_id
+      INNER JOIN
+        donation ON confirmorder.donation_id = donation.donation_id
+      INNER JOIN
+        users AS users_request ON confirmorder.user_idrequest = users_request.user_id
+      WHERE 
+      donation.is_deleted = true AND orders.is_deleted = true and confirmorder.is_deleted=false
+	    order by accept_time desc LIMIT $1 OFFSET $2;
+        `,
+          [limit, offset]
+        );
+        if (!result.rowCount) {
+          throw new Error("Order not found");
+        }
+        return result.rows;
       }
-      return result.rows;
     } catch (err) {
       throw err;
     }

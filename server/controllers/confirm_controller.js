@@ -131,7 +131,10 @@ exports.getConfirmHistoryidorder = async (req, res) => {
 
 exports.getConfirmHistoryall = async (req, res) => {
   try {
-    const result = await confirmmodel.getConfirmHistoryall();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search;
+    const result = await confirmmodel.getConfirmHistoryall(page, limit, search);
     res.json(result);
   } catch (err) {
     console.error(err);
