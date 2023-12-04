@@ -16,7 +16,11 @@ const Dashboard = () => {
     <div className="bg-background h-screen">
       <div className="flex bg-background  text-blue">
         <Side onSelectMenuItem={handleSelectMenuItem} />
+<<<<<<< HEAD
         <div className="flex-grow  p-8">
+=======
+        <div className="flex-grow p-8">
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
           {selectedMenuItem && (
             <div>
               {selectedMenuItem === "Users" && <Users />}

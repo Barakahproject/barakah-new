@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import React, { useState, useEffect } from "react";
 // import Axios from "axios";
 // import {
@@ -283,6 +284,8 @@
 
 // export default OrdersTable;
 
+=======
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import {
@@ -332,7 +335,11 @@ const OrdersTable = () => {
   // Fetch data from API when component mounts or when pagination changes
   useEffect(() => {
     // Make an Axios request to your API endpoint with pagination parameters
+<<<<<<< HEAD
     Axios.get(`http://localhost:5000/gitconfirmhistoryall`)
+=======
+    Axios.get(`http://localhost:5000/getconfirm`)
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
       .then((response) => {
         // Assuming the API response has a data property that contains the rows
         setTableRows(response.data);
@@ -346,7 +353,11 @@ const OrdersTable = () => {
   // Handle delete button click
   const handleDelete = (order_id) => {
     // Add your delete logic here
+<<<<<<< HEAD
     Axios.put(`http://localhost:5000/deleteconfirm/${order_id}`)
+=======
+    Axios.put(`http://localhost:5000/deleteorder/${order_id}`)
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
       .then((response) => {
         console.log(`Deleting order with id ${order_id}`);
       })
@@ -354,6 +365,7 @@ const OrdersTable = () => {
   };
 
   // Filter the table rows based on the search term
+<<<<<<< HEAD
   // const filteredRows = tableRows.filter((row) => {
   //   // Destructure the row object to get individual fields
   //   const {
@@ -371,6 +383,49 @@ const OrdersTable = () => {
   //   // Return true if any part of the combined text includes the search term
   //   return combinedText.toLowerCase().includes(searchTerm.toLowerCase());
   // });
+=======
+  const filteredRows = tableRows.filter((row) => {
+    // // Only search in the relevant fields
+    // const providerName = row["provider_name"];
+    // const providerLocation = row["provider_location"];
+    // const providerPhone = row["provider_phone"];
+    // const receiverName = row["receiver_name"];
+    // const receiverLocation = row["receiver_location"];
+    // const receiverPhone = row["receiver_phone"];
+    // return (
+    //   (providerName &&
+    //     providerName
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (providerLocation &&
+    //     providerLocation
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (providerPhone &&
+    //     providerPhone
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (receiverName &&
+    //     receiverName
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (receiverLocation &&
+    //     receiverLocation
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase())) ||
+    //   (receiverPhone &&
+    //     receiverPhone
+    //       .toString()
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase()))
+    // );
+  });
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
 
   // Calculate pagination info
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -378,17 +433,26 @@ const OrdersTable = () => {
   return (
     <div>
       {/* Add the search input field */}
+<<<<<<< HEAD
       <div className="w-1/2 flex justify-end m-auto">
+=======
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
       <Input
         type="text"
         placeholder="Search..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+<<<<<<< HEAD
         className="bg-white w-1/4 border border-blue ml-[20%] "
       />
 
       </div>
     
+=======
+        className="bg-white w-[300px] border border-blue ml-[20%] "
+      />
+
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
       <Card className="h-full w-[80%] mt-8 ml-[20%]  bg-blue-gray-50/50 overflow-auto ">
         <CardBody className="px-0">
           <table className="mt-4 w-full min-w-max table-auto text-left ">
@@ -404,6 +468,7 @@ const OrdersTable = () => {
               </tr>
             </thead>
             <tbody>
+<<<<<<< HEAD
               {tableRows.map(
                 (
                   {
@@ -415,6 +480,19 @@ const OrdersTable = () => {
                     requestn,
                     order_city,
                     orderphone,
+=======
+              {filteredRows.map(
+                (
+                  {
+                    confirm_id,
+                    username,
+                    provider_location,
+                    provider_phone,
+                    collectiontime,
+                    receiver_name,
+                    receiver_location,
+                    receiver_phone,
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
                   },
                   index
                 ) => {
@@ -440,7 +518,11 @@ const OrdersTable = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
+<<<<<<< HEAD
                           {donationn}
+=======
+                          {username}
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
                         </Typography>
                       </td>
                       <td>
@@ -449,8 +531,12 @@ const OrdersTable = () => {
                           color="blue-gray"
                           className="font-normal opacity-70"
                         >
+<<<<<<< HEAD
                           {accept_location}
                           {console.log(accept_location)}
+=======
+                          {provider_location}
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
                         </Typography>
                       </td>
                       <td>
@@ -459,7 +545,11 @@ const OrdersTable = () => {
                           color="blue-gray"
                           className="font-normal opacity-70"
                         >
+<<<<<<< HEAD
                           {phone}
+=======
+                          {provider_phone}
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
                         </Typography>
                       </td>
                       <td className={classes}>
@@ -477,7 +567,11 @@ const OrdersTable = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
+<<<<<<< HEAD
                           {requestn}
+=======
+                          {receiver_name}
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
                         </Typography>
                       </td>
                       <td className={classes}>
@@ -486,7 +580,11 @@ const OrdersTable = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
+<<<<<<< HEAD
                           {order_city}
+=======
+                          {receiver_location}
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
                         </Typography>
                       </td>
                       <td className={classes}>
@@ -495,7 +593,11 @@ const OrdersTable = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
+<<<<<<< HEAD
                           {orderphone}
+=======
+                          {receiver_phone}
+>>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
                         </Typography>
                       </td>
                       <td className={classes}>
