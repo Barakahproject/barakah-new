@@ -2,36 +2,54 @@ const db = require("./db");
 const bcrypt = require("bcrypt");
 
 module.exports = {
-  getUserDetails: async (page, limit) => {
+  getUserDetails: async (page, limit, search) => {
     try {
       if (page <= 0 || limit <= 0) {
         throw new Error("Invalid page or limit parameter");
       }
       const offset = (page - 1) * limit;
-      const user = await db.query(
-        `SELECT *, COUNT(*) OVER () as total_count
+      if (search) {
+        const user = await db.query(
+          `SELECT *, COUNT(*) OVER () as total_count
+        FROM users
+        WHERE
+		LOWER(username) LIKE '%' || LOWER($3) || '%' OR 
+        LOWER(email) LIKE '%' || LOWER($3) || '%'
+		and is_deleted = false ORDER BY user_id
+        LIMIT $1 OFFSET $2`,
+          [limit, offset, search]
+        );
+        return user.rows;
+      } else {
+        if (page <= 0 || limit <= 0) {
+          throw new Error("Invalid page or limit parameter");
+        }
+        const offset = (page - 1) * limit;
+        const user = await db.query(
+          `SELECT *, COUNT(*) OVER () as total_count
         FROM users
         WHERE is_deleted = false ORDER BY user_id
         LIMIT $1 OFFSET $2; `,
-        [limit, offset]
-      );
-      return user.rows;
+          [limit, offset]
+        );
+        return user.rows;
+      }
     } catch (err) {
       throw err;
     }
   },
-  searchuser: async (search) => {
-    try {
-      const query = `SELECT * FROM users WHERE
-      LOWER(username) LIKE '%' || LOWER($1) || '%' OR 
-      LOWER(email) LIKE '%' || LOWER($1) || '%';
-      `;
-      const results = await db.query(query, [search]);
-      return results.rows;
-    } catch (err) {
-      throw err;
-    }
-  },
+  // searchuser: async (search) => {
+  //   try {
+  //     const query = `SELECT * FROM users WHERE
+  //     LOWER(username) LIKE '%' || LOWER($1) || '%' OR
+  //     LOWER(email) LIKE '%' || LOWER($1) || '%';
+  //     `;
+  //     const results = await db.query(query, [search]);
+  //     return results.rows;
+  //   } catch (err) {
+  //     throw err;
+  //   }
+  // },
   // getUserDetails: async (page, limit) => {
   //   try {
   //     if (page <= 0 || limit <= 0) {

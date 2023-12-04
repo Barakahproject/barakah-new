@@ -14,7 +14,7 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
     phoneNumber: "",
-    city: "city1",
+    city: "Amman",
   });
   const [formErrors, setFormErrors] = useState({});
   const [industryType, setIndustryType] = useState("Compost");

@@ -167,4 +167,32 @@ module.exports = {
       throw err;
     }
   },
+  getConfirmHistoryall: async (user_id) => {
+    try {
+      const result = await db.query(
+        `SELECT 
+        confirmorder.*, users.username AS donationn, users_request.username AS requestn,
+        orders.order_city, orders.phone as orderphone
+      FROM 
+        confirmorder
+      INNER JOIN
+        users ON confirmorder.user_iddonation = users.user_id
+      INNER JOIN 
+        orders ON confirmorder.order_id = orders.order_id
+      INNER JOIN
+        donation ON confirmorder.donation_id = donation.donation_id
+      INNER JOIN
+        users AS users_request ON confirmorder.user_idrequest = users_request.user_id
+      WHERE 
+        donation.is_deleted = true AND orders.is_deleted = true and confirmorder.is_deleted=false;
+      `
+      );
+      if (!result.rowCount) {
+        throw new Error("Order not found");
+      }
+      return result.rows;
+    } catch (err) {
+      throw err;
+    }
+  },
 };

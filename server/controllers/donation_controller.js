@@ -152,17 +152,10 @@ exports.repostDonation = async (req, res) => {
     free,
     expired,
     additionalnotes,
+    imageurl,
   } = req.body;
   const user_id = req.user.user_id;
   try {
-    const file = req.file;
-    if (file) {
-      const fileName = `${Date.now()}_${file.originalname}`;
-
-      const fileurl = await firebase.uploadFileToFirebase(file, fileName);
-
-      req.body.imageurl = fileurl;
-    }
     await donationmodel.repostDonation(
       type,
       details,
@@ -174,7 +167,7 @@ exports.repostDonation = async (req, res) => {
       free,
       expired,
       additionalnotes,
-      req.body.imageurl
+      imageurl
     );
     res.status(200).json({
       message: `Donation Reposted Sucessfully`,
@@ -296,11 +289,12 @@ exports.sortdateDonation = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search;
 
     if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
       throw new Error("Invalid page or limit parameter");
     }
-    const result = await donationmodel.sortdateDonation(page, limit);
+    const result = await donationmodel.sortdateDonation(page, limit, search);
     res.json(result);
   } catch (err) {
     console.error(err);

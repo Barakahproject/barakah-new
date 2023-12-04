@@ -24,6 +24,6 @@ router.put("/updateuserrole/:user_id", userController.update_userrole);
 router.put("/deleteuser/:user_id", userController.delete_user);
 router.get("/countalluser", userController.countalluser);
 router.get("/countusersub", userController.countusersub);
-router.post("/searchuser", userController.searchuser);
+// router.post("/searchuser", userController.searchuser);
 
 module.exports = router;

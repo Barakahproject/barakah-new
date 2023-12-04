@@ -5,6 +5,7 @@ require("dotenv").config();
 // const crypto = require("crypto");
 const Joi = require("joi");
 const firebase = require("../middleware/firebase.js");
+const { search } = require("../routes/users_route.js");
 
 // const secretKey1 = crypto.randomBytes(32).toString("hex");
 // console.log(secretKey1);
@@ -122,11 +123,12 @@ exports.getUserDetails = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search;
 
     if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
       throw new Error("Invalid page or limit parameter");
     }
-    const userDetails = await userModel.getUserDetails(page, limit);
+    const userDetails = await userModel.getUserDetails(page, limit, search);
     res.json(userDetails);
   } catch (err) {
     console.error(err.message);
@@ -135,16 +137,16 @@ exports.getUserDetails = async (req, res) => {
 };
 
 // ---------------------------------------------------------------- search users ----------------------------------------------------
-exports.searchuser = async (req, res) => {
-  const { search } = req.body;
-  try {
-    const usersearch = await userModel.searchuser(search);
-    res.json(usersearch);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send(err.message);
-  }
-};
+// exports.searchuser = async (req, res) => {
+//   const { search } = req.body;
+//   try {
+//     const usersearch = await userModel.searchuser(search);
+//     res.json(usersearch);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send(err.message);
+//   }
+// };
 
 // // ----------------------------------------------------------------all user details-----------------------------------------------
 // exports.getUserDetails = async (req, res) => {

@@ -36,5 +36,6 @@ router.get(
   verify.authorize([1, 2, 3, 4, 5]),
   confirmController.getConfirmHistoryidorder
 );
+router.get("/gitconfirmhistoryall", confirmController.getConfirmHistoryall);
 
 module.exports = router;

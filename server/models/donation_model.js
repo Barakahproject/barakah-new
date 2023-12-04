@@ -282,24 +282,45 @@ module.exports = {
       throw new Error("Donation not found");
     }
   },
-  sortdateDonation: async (page, limit) => {
-    if (page <= 0 || limit <= 0) {
-      throw new Error("Invalid page or limit parameter");
-    }
-    const offset = (page - 1) * limit;
-    const query = `select *,donation.imageurl from donation 
+  sortdateDonation: async (page, limit, search) => {
+    try {
+      if (page <= 0 || limit <= 0) {
+        throw new Error("Invalid page or limit parameter");
+      }
+      const offset = (page - 1) * limit;
+      if (search) {
+        const query = `SELECT users.user_id, users.username, users.industry, donation.*, 
+    COUNT(*) OVER () as total_count from donation 
+    inner join users on donation.user_id = users.user_id
+    where LOWER(type) LIKE '%' || LOWER($3) || '%'
+    and donation.is_deleted = false 
+	  order by date desc ,time desc LIMIT $1 OFFSET $2 `;
+        const result = await db.query(query, [limit, offset, search]);
+        return result.rows;
+      } else {
+        if (page <= 0 || limit <= 0) {
+          throw new Error("Invalid page or limit parameter");
+        }
+        const offset = (page - 1) * limit;
+        const query = `SELECT users.user_id, users.username, users.industry, donation.*, 
+    COUNT(*) OVER () as total_count from donation 
     inner join users on donation.user_id = users.user_id
     where donation.is_deleted = false 
 	  order by date desc ,time desc LIMIT $1 OFFSET $2 `;
-    const result = await db.query(query, [limit, offset]);
-    return result.rows;
+        const result = await db.query(query, [limit, offset]);
+        return result.rows;
+      }
+    } catch (err) {
+      throw err;
+    }
   },
   allDonation: async (status, page, limit) => {
     if (page <= 0 || limit <= 0) {
       throw new Error("Invalid page or limit parameter");
     }
     const offset = (page - 1) * limit;
-    const query = `select *,donation.imageurl from donation 
+    const query = `SELECT users.user_id, users.username, users.industry, donation.*, 
+    COUNT(*) OVER () as total_count from donation 
     inner join users on donation.user_id = users.user_id
     where donation.is_deleted = false and donation.status = $1 
     order by donation.donation_id LIMIT $2 OFFSET $3`;

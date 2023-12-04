@@ -24,7 +24,7 @@ router.post(
 );
 router.post(
   "/repostdonation",
-  upload.single("image"),
+  // upload.single("image"),
   verify.authorize([1, 2, 3]),
   donationController.repostDonation
 );
