@@ -141,3 +141,15 @@ exports.getConfirmHistoryall = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+
+// -------------------------------------------------- confirmed orders ----------------------------------------------------------------
+
+exports.countconfirm = async (req, res) => {
+  try {
+    const result = await confirmmodel.countconfirm();
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(404).json({ message: err.message });
+  }
+};

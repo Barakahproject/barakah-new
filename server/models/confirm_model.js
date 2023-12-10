@@ -235,4 +235,13 @@ module.exports = {
       throw err;
     }
   },
+  countconfirm: async () => {
+    try {
+      const query = `select count (*) from confirmorder where is_deleted = false`;
+      const result = await db.query(query);
+      return result.rows;
+    } catch (err) {
+      throw err;
+    }
+  },
 };

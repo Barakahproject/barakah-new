@@ -37,5 +37,6 @@ router.get(
   confirmController.getConfirmHistoryidorder
 );
 router.get("/gitconfirmhistoryall", confirmController.getConfirmHistoryall);
+router.get("/countconfirm", confirmController.countconfirm);
 
 module.exports = router;

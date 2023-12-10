@@ -15,7 +15,7 @@ module.exports = {
         WHERE
 		LOWER(username) LIKE '%' || LOWER($3) || '%' OR 
         LOWER(email) LIKE '%' || LOWER($3) || '%'
-		and is_deleted = false ORDER BY user_id
+		and is_deleted = false ORDER BY created_at
         LIMIT $1 OFFSET $2`,
           [limit, offset, search]
         );
@@ -178,6 +178,18 @@ module.exports = {
   countAllUsers: async () => {
     try {
       const query = `SELECT COUNT(*) FROM users WHERE is_deleted = false`;
+      const result = await db.query(query);
+      return result.rows;
+    } catch (err) {
+      throw err;
+    }
+  },
+  countuserrole: async (role_id) => {
+    try {
+      const query = `SELECT role_id, COUNT(*) as total_count
+      FROM users
+      WHERE is_deleted = false AND role_id IN (1, 2, 3,4,5)
+      GROUP BY role_id;`;
       const result = await db.query(query);
       return result.rows;
     } catch (err) {

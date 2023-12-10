@@ -18,22 +18,34 @@ module.exports = {
     const result = await db.query(query);
     return result.rows;
   },
-  getNotExpiredDonation: async () => {
+  getNotExpiredDonation: async (page, limit) => {
     const date = new Date();
-    const query = `select *,donation.imageurl from donation 
+    if (page <= 0 || limit <= 0) {
+      throw new Error("Invalid page or limit parameter");
+    }
+    const offset = (page - 1) * limit;
+    const query = `select *,donation.imageurl, 
+    COUNT(*) OVER () as total_count from donation 
     inner join users on donation.user_id = users.user_id
-    where donation.is_deleted = false and expiry_date > $1`;
-    const result = await db.query(query, [date]);
+    where donation.is_deleted = false and expiry_date > $1
+    LIMIT $2 OFFSET $3`;
+    const result = await db.query(query, [date, limit, offset]);
     return result.rows;
   },
 
-  getExpiredDonation: async () => {
+  getExpiredDonation: async (page, limit) => {
     const date = new Date();
+    if (page <= 0 || limit <= 0) {
+      throw new Error("Invalid page or limit parameter");
+    }
+    const offset = (page - 1) * limit;
     const query = `
-    select *,donation.imageurl from donation 
+    select *,donation.imageurl, 
+    COUNT(*) OVER () as total_count from donation 
     inner join users on donation.user_id = users.user_id
-    where donation.is_deleted = false and expiry_date < $1`;
-    const result = await db.query(query, [date]);
+    where donation.is_deleted = false and expired = true 
+    LIMIT $1 OFFSET $2`;
+    const result = await db.query(query, [limit, offset]);
     return result.rows;
   },
 

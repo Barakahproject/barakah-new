@@ -28,7 +28,13 @@ exports.getadminDonation = async (req, res) => {
 
 exports.getnotexpireddonation = async (req, res) => {
   try {
-    const result = await donationmodel.getNotExpiredDonation();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
+      throw new Error("Invalid page or limit parameter");
+    }
+    const result = await donationmodel.getNotExpiredDonation(page, limit);
     res.json(result);
   } catch (err) {
     console.error(err);
@@ -40,7 +46,13 @@ exports.getnotexpireddonation = async (req, res) => {
 
 exports.getexpireddonation = async (req, res) => {
   try {
-    const result = await donationmodel.getExpiredDonation();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
+      throw new Error("Invalid page or limit parameter");
+    }
+    const result = await donationmodel.getExpiredDonation(page, limit);
     res.json(result);
   } catch (err) {
     console.error(err);

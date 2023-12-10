@@ -5,7 +5,6 @@ require("dotenv").config();
 // const crypto = require("crypto");
 const Joi = require("joi");
 const firebase = require("../middleware/firebase.js");
-const { search } = require("../routes/users_route.js");
 
 // const secretKey1 = crypto.randomBytes(32).toString("hex");
 // console.log(secretKey1);
@@ -96,7 +95,7 @@ exports.loginUser = async (req, res) => {
         storedHashedPassword
       );
       if (!matched_password) {
-        res.status(400).json({ message: "password is invalid" });
+        res.status(400).json({ error: "password is invalid" });
         return;
       }
       const payload = {
@@ -108,10 +107,17 @@ exports.loginUser = async (req, res) => {
       const secretKey = process.env.SECRET_KEY;
       const token = jwt.sign(payload, secretKey, { expiresIn: "6h" });
 
-      res.status(200).json({
-        message: "Login Successfully",
-        token: token,
-      });
+      if (user.role_id === 1) {
+        res.status(202).json({
+          message: "Login Successfully",
+          token: token,
+        });
+      } else {
+        res.status(200).json({
+          message: "Login Successfully",
+          token: token,
+        });
+      }
     }
   } catch (err) {
     console.error(err);
@@ -261,6 +267,17 @@ exports.countusersub = async (req, res) => {
 exports.countalluser = async (req, res) => {
   try {
     const count = await userModel.countAllUsers();
+    res.json(count);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send(err.message);
+  }
+};
+// --------------------------------------------------count users role -----------------------------------------
+
+exports.countuserrole = async (req, res) => {
+  try {
+    const count = await userModel.countuserrole();
     res.json(count);
   } catch (err) {
     console.error(err.message);
