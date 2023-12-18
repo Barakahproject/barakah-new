@@ -24,24 +24,14 @@ const ContactTable = () => {
 
   useEffect(() => {
     // Make an Axios request to your API endpoint with pagination parameters
-    Axios.get("http://localhost:5000/countallcontacts")
-      .then((response) => {
-        // Assuming the API response has a data property that contains the rows
-        setTotalItems(response.data[0].count);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-
-  // Fetch data from API when component mounts or when pagination changes
-  useEffect(() => {
-    // Make an Axios request to your API endpoint with pagination parameters
-    Axios.get(`http://localhost:5000/getcontact`, {})
+    Axios.get(`http://localhost:5000/getcontact?page=${currentPage}`)
+      // {search:searchTerm}
       .then((response) => {
         // Assuming the API response has a data property that contains the rows
         setTableRows(response.data);
-        console.log(response);
+        setTotalItems(response.data[0].total_count);
+
+        console.log(response.data[0].total_count);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -52,44 +42,17 @@ const ContactTable = () => {
   const handleDelete = (contact_id) => {
     // Add your delete logic here
     Axios.put(`http://localhost:5000/deletecontact/${contact_id}`)
-      .then((response) => {
-        console.log(`Deleting contact with id ${contact_id}`);
-      })
+      .then((response) => {})
       .catch((error) => {});
   };
-
-  // Filter the table rows based on the search term
-  const filteredRows = tableRows.filter((row) => {
-    // Only search in the 'subject', 'username', and 'email' fields
-    const subject = row["subject"];
-    const username = row["username"];
-    const email = row["email"];
-
-    return (
-      (subject &&
-        subject.toString().toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (username &&
-        username.toString().toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (email &&
-        email.toString().toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-  });
 
   // Calculate pagination info
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
     <div>
-      {/* Add the search input field */}
-      <Input
-        type="text"
-        placeholder="Search..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="bg-white w-[300px] border border-blue ml-[20%] "
-      />
-
-      <Card className="h-full w-[80%] mt-8 ml-[20%]  bg-blue-gray-50/50 ">
+      <div className="text-blue text-3xl font-bold ml-[25%] mb-4">messages</div>
+      <Card className="h-full w-[70%] mt-8 ml-[25%]  bg-blue-gray-50/50 ">
         <CardBody className="px-0">
           <table className="mt-4 w-full min-w-max table-auto text-left ">
             <thead className="bg-white">
@@ -104,7 +67,7 @@ const ContactTable = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredRows.map(
+              {tableRows.map(
                 (
                   { subject, name, email, message, submitted_at, contact_id },
                   index
@@ -158,7 +121,14 @@ const ContactTable = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {submitted_at}
+                          {submitted_at.split("T")[0]}
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {submitted_at.split("T")[1].split(".")[0]}
                         </Typography>
                       </td>
                       <td className={classes}>
@@ -181,7 +151,7 @@ const ContactTable = () => {
       </Card>
 
       {/* Pagination controls */}
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-end mt-4 mr-14">
         <button
           onClick={() =>
             setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))

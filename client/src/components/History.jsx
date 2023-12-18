@@ -11,7 +11,10 @@ const History = (role) => {
     const fetchData = async () => {
       try {
         console.log(role.role);
-        const endpoint = role.role == 3 ? "http://localhost:5000/getconfirmhistorydonate" :  "http://localhost:5000/getconfirmhistoryorder";
+        const endpoint =
+          role.role == 3
+            ? "http://localhost:5000/getconfirmhistorydonate"
+            : "http://localhost:5000/getconfirmhistoryorder";
 
         const response = await axios.get(endpoint);
         setFoodData(response.data);
@@ -58,7 +61,11 @@ const History = (role) => {
               <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {food.type}
               </td>
-              <td className="px-6 py-4">{food.date}</td>
+              <td className="px-6 py-4">
+                {food.date.split("T")[0]}
+                <p></p>
+                {food.time}
+              </td>
               <td className="px-6 py-4 text-center space-x-3">
                 <button
                   className="font-medium bg-blue text-white p-2 shadow-md hover:underline"

@@ -50,6 +50,17 @@ body {
   z-index: 0; /* Use the fadeIn animation with a delay */
 }
 
+.form-container-s {
+  animation: slideIn 1s forwards; /* Use the slideIn animation */
+  z-index: 0;
+}
+
+.fade-in-s {
+  opacity: 0; /* Start with 0 opacity */
+  animation: fadeIn 2s 1s forwards;
+  z-index: 10; /* Use the fadeIn animation with a delay */
+}
+
 @keyframes slideIn {
   from {
     transform: translateY(-100%);

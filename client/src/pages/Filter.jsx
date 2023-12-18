@@ -522,9 +522,14 @@ export default function Filter() {
                         <p className="text-gray-700 text-xs mb-2">
                           Posted by: {post.username}
                         </p>
-                        <p className="text-gray-700 text-xs flex justify-end">
-                          {post.date}
-                        </p>
+                        <div className="flex justify-between">
+                          <p className="text-gray-700 text-xs flex justify-start">
+                            {post.price} JOD
+                          </p>
+                          <p className="text-gray-700 text-xs flex justify-end">
+                            {post.time.split()} / {post.date.split("T")[0]}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   ))}

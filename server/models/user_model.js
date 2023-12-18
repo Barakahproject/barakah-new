@@ -10,12 +10,20 @@ module.exports = {
       const offset = (page - 1) * limit;
       if (search) {
         const user = await db.query(
-          `SELECT *, COUNT(*) OVER () as total_count
-        FROM users
+          `SELECT 
+            COALESCE(COUNT(donation.user_id), 0) AS total_donation,
+            users.*, COUNT(users.*) OVER () as total_count
+          FROM 	
+            users
+          LEFT JOIN
+            donation ON users.user_id = donation.user_id AND donation.is_deleted = false
         WHERE
-		LOWER(username) LIKE '%' || LOWER($3) || '%' OR 
-        LOWER(email) LIKE '%' || LOWER($3) || '%'
-		and is_deleted = false ORDER BY created_at
+          LOWER(username) LIKE '%' || LOWER($3) || '%' OR 
+          LOWER(email) LIKE '%' || LOWER($3) || '%'
+            and users.is_deleted = false
+        GROUP BY
+          users.user_id
+        ORDER BY created_at
         LIMIT $1 OFFSET $2`,
           [limit, offset, search]
         );
@@ -26,10 +34,17 @@ module.exports = {
         }
         const offset = (page - 1) * limit;
         const user = await db.query(
-          `SELECT *, COUNT(*) OVER () as total_count
+          `SELECT 
+          COALESCE(COUNT(donation.user_id), 0) AS total_donation,
+          users.*, COUNT(users.*) OVER () as total_count
         FROM users
-        WHERE is_deleted = false ORDER BY user_id
-        LIMIT $1 OFFSET $2; `,
+        LEFT JOIN
+            donation ON users.user_id = donation.user_id AND donation.is_deleted = false
+        WHERE users.is_deleted = false
+        GROUP BY
+          users.user_id
+          ORDER BY created_at
+          LIMIT $1 OFFSET $2 `,
           [limit, offset]
         );
         return user.rows;
@@ -38,34 +53,6 @@ module.exports = {
       throw err;
     }
   },
-  // searchuser: async (search) => {
-  //   try {
-  //     const query = `SELECT * FROM users WHERE
-  //     LOWER(username) LIKE '%' || LOWER($1) || '%' OR
-  //     LOWER(email) LIKE '%' || LOWER($1) || '%';
-  //     `;
-  //     const results = await db.query(query, [search]);
-  //     return results.rows;
-  //   } catch (err) {
-  //     throw err;
-  //   }
-  // },
-  // getUserDetails: async (page, limit) => {
-  //   try {
-  //     if (page <= 0 || limit <= 0) {
-  //       throw new Error("Invalid page or limit parameter");
-  //     }
-  //     const offset = (page - 1) * limit;
-  //     const user = await db.query(
-  //       `SELECT * FROM users WHERE is_deleted = false order by user_id LIMIT $1 OFFSET $2 `,
-  //       [limit, offset]
-  //     );
-  //     return user.rows;
-  //   } catch (err) {
-  //     throw err;
-  //   }
-  // },
-
   getUserInfo: async (user_id) => {
     try {
       const user = await db.query(
@@ -212,6 +199,35 @@ module.exports = {
     const user = await db.query(userQuery, [email]);
     return user.rows[0];
   },
+  getUserByEmails: async (email) => {
+    const userQuery = "SELECT * FROM users WHERE email = $1";
+    const user = await db.query(userQuery, [email]);
+    return user.rows[0];
+  },
+  createUsers: async ({ username, email, picture }) => {
+    const role_id = "3";
+    const created_at = new Date();
+    const password = "No Access";
+    const phone = "00000000";
+    const city = "No Access";
+    const query = `
+    INSERT INTO users (username,email,password,city,phone,role_id,created_at,imageurl) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING *`;
+
+    const values = [
+      username,
+      email,
+      password,
+      city,
+      phone,
+      role_id,
+      created_at,
+      picture,
+    ];
+    const user = await db.query(query, values);
+    return user.rows[0];
+  },
+
   createUser: async ({
     username,
     email,
@@ -245,5 +261,35 @@ module.exports = {
     const userQuery = "update users set subscription = true WHERE user_id = $1";
     const user = await db.query(userQuery, [user_id]);
     return user.rows[0];
+  },
+  partners: async () => {
+    const query = `select username, imageurl from users where partners = true and is_deleted = false`;
+    const result = await db.query(query);
+    return result.rows;
+  },
+  postpartners: async (user_id) => {
+    const query = `update users set partners = true where user_id= $1`;
+    const result = await db.query(query, [user_id]);
+    return result.rows[0];
+  },
+  countuserdonation: async () => {
+    try {
+      const query = `SELECT
+      COALESCE(COUNT(donation.user_id), 0) AS total_donation,
+      users.user_id, users.username, users.email
+    FROM
+      users
+    LEFT JOIN
+      donation ON users.user_id = donation.user_id AND donation.is_deleted = false
+    WHERE
+      users.is_deleted = false
+    GROUP BY
+      users.user_id
+      order by total_donation desc;`;
+      const result = await db.query(query);
+      return result.rows;
+    } catch (err) {
+      throw err;
+    }
   },
 };

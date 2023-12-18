@@ -92,12 +92,13 @@ const Details = () => {
 
           <div className="flex items-center gap-20 text-blue mb-4">
             <div className="mb-4 flex flex-col">
-              <span className="font-bold">Quantity:</span>{" "}
-              {postDetails.qty}
+              <span className="font-bold">Quantity:</span> {postDetails.qty}
             </div>
             <div className="mb-4 flex flex-col">
               <span className="font-bold">Expiry Date:</span>{" "}
-              {postDetails.expired ? "Expired" : postDetails.expiry_date}
+              {postDetails.expired
+                ? "Expired"
+                : postDetails.expiry_date.split("T")[0]}
             </div>
             <div className="mb-4 flex flex-col">
               <span className="font-bold">Price:</span>{" "}

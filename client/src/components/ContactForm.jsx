@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import paper from "../assets/paper-airplane.png";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -34,8 +35,8 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="bg-background flex justify-center contact-form-container">
-      <div className=" p-64 form-container">
+    <div className="bg-background flex justify-center contact-form-container  ">
+      <div className=" p-64 form-container mt-16">
         <div className="max-w-2xl mx-auto  p-24 bg-white shadow-lg text-blue relative z-20 pt-14  ">
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -98,7 +99,7 @@ const ContactForm = () => {
             <div className="text-center mt-8">
               <button
                 type="submit"
-                className="bg-orange text-white py-2 px-20 shadow-md text-md font-semibold"
+                className="bg-blue text-white py-2 px-20 shadow-md text-md font-semibold"
               >
                 Send Message
               </button>
@@ -106,14 +107,16 @@ const ContactForm = () => {
           </form>
         </div>
       </div>
-      <div className="bg-blue w-[58%] h-[60%] absolute z-0 top-24 text-center font-semibold text-white text-xl pt-10 fade-in">
-        <span className="text-3xl block pb-2">Let's Connect! </span>Have a
-        question, suggestion, or just want to chat?{" "}
-        <span className="block font-normal text-lg px-10 ">
+      <div className="bg-blue w-[58%] h-[60%] absolute z-0 top-24 text-center font-semibold text-white text-xl pt-14 fade-in mt-10">
+        <span className="text-3xl block pb-2">
+          Let's Connect! <img src={paper} alt="" className="inline w-20" />
+        </span>
+        Have a question, suggestion, or just want to chat?{" "}
+        <span className="block font-normal text-lg px-20 ">
           Drop us a message below! Your thoughts matter as we work together to
           reduce food waste and make a meaningful impact. Reach out now!
         </span>
-        <div className="flex justify-center mt-4 font-medium">
+        {/* <div className="flex justify-center mt-4 font-medium">
           <div className="flex items-center mr-6">
             <div className="h-6 w-6 text-lg text-white" />
             <svg
@@ -129,7 +132,7 @@ const ContactForm = () => {
               />
             </svg>
 
-            <span className="ml-2 text-white">123-456-7890</span>
+            <span className="ml-2 text-white text-[18px]">123-456-7890</span>
           </div>
           <div className="flex items-center">
             <div className="h-6 w-6 text-lg text-white" />
@@ -146,9 +149,11 @@ const ContactForm = () => {
               />
             </svg>
 
-            <span className="ml-2 text-white">Queen Zain Street, Az Zarqa</span>
+            <span className="ml-2 text-[18px] text-white">
+              Queen Zain Street, Az Zarqa
+            </span>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

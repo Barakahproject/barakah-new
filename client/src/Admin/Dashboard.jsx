@@ -5,28 +5,27 @@ import Posts from "./Posts";
 import Side from "./Side";
 import ContactTable from "./Contact";
 import OrdersTable from "./Orders";
-
+import Dash from "./Dash";
 const Dashboard = () => {
-  const [selectedMenuItem, setSelectedMenuItem] = useState("Users");
+  const [selectedMenuItem, setSelectedMenuItem] = useState("dashboard");
   const handleSelectMenuItem = (menuItem) => {
     setSelectedMenuItem(menuItem);
+    console.log(selectedMenuItem);
   };
 
   return (
     <div className="bg-background h-screen">
       <div className="flex bg-background  text-blue">
         <Side onSelectMenuItem={handleSelectMenuItem} />
-<<<<<<< HEAD
+
         <div className="flex-grow  p-8">
-=======
-        <div className="flex-grow p-8">
->>>>>>> f8a88c976d836e5d179d5bb4e4b71b1c06fabbb9
           {selectedMenuItem && (
             <div>
-              {selectedMenuItem === "Users" && <Users />}
-              {selectedMenuItem === "Posts" && <Posts />}
-              {selectedMenuItem === "Contact" && <ContactTable />}
-              {selectedMenuItem === "Orders" && <OrdersTable />}
+              {selectedMenuItem === "dashboard" && <Dash />}
+              {selectedMenuItem === "users" && <Users overview="no" />}
+              {selectedMenuItem === "posts" && <Posts overview="no" />}
+              {selectedMenuItem === "messages" && <ContactTable />}
+              {selectedMenuItem === "orders" && <OrdersTable />}
 
               {/* Add more conditions for other menu items */}
             </div>

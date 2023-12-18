@@ -10,26 +10,59 @@ import {
   Tooltip,
   Button,
   Input,
+  Select,
+  Option,
 } from "@material-tailwind/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 // Define the table head for posts
 const POSTS_TABLE_HEAD = [
   "Food Type",
+  "Image",
   "Username",
   "Created Time",
-  "status",
+  "Status",
+
   "Action",
 ];
 
-const Posts = () => {
-  const [postsTableRows, setPostsTableRows] = useState([]);
+const Posts = (overview) => {
+  const [tableRows, setTableRows] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+
+  const [selectedFilter, setSelectedFilter] = useState("all");
+
+  const handleFilterChange = (value) => {
+    setSelectedFilter(value);
+    // Perform backend filtering based on the selected value
+    // You may want to make an Axios request here to fetch filtered data
+  };
+
+  const filters = [
+    { label: "All", value: "all" },
+    { label: "Approved", value: "approved" },
+    { label: "Pending", value: "pending" },
+    { label: "Expired", value: "expired" },
+    { label: "Not Expired", value: "not_expired" },
+  ];
+
+  const openImageModal = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setIsImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setSelectedImage(null);
+    setIsImageModalOpen(false);
+  };
 
   const openModal = (post) => {
     setSelectedPost(post);
@@ -42,61 +75,71 @@ const Posts = () => {
   };
 
   useEffect(() => {
-    Axios.get(`http://localhost:5000/sortdonation?page=1`)
+    Axios.get(
+      `http://localhost:5000/sortdonation?page=${currentPage}&search=${searchTerm}`
+    )
       .then((response) => {
-        setTotalItems(response.data.length);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    Axios.get(`http://localhost:5000/sortdonation?page=${currentPage}`)
-      .then((response) => {
-        setPostsTableRows(response.data);
+        setTableRows(response.data);
+        setTotalItems(response.data[0].total_count);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   }, [currentPage, itemsPerPage]);
 
-  const handleDelete = (donation_id) => {
-    Axios.put(`http://localhost:5000/deletedonation/${donation_id}`)
-      .then((response) => {
-        console.log(`Deleting donation with id ${donation_id}`);
-      })
-      .catch((error) => {});
+  const handleSearchOnEnter = (e) => {
+    if (e.key === "Enter") {
+      Axios.get(
+        `http://localhost:5000/sortdonation?page=${currentPage}&search=${searchTerm}`
+      )
+        .then((response) => {
+          setTableRows(response.data);
+          setTotalItems(response.data[0].total_count);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+
+      setCurrentPage(1);
+      setSearchTerm(e.target.value);
+    }
   };
-
-  const filteredRows = postsTableRows.filter((row) => {
-    const type = row["type"];
-    const username = row["username"];
-    const status = row["status"];
-
-    return (
-      (type &&
-        type.toString().toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (username &&
-        username.toString().toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (status &&
-        status.toString().toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-  });
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
     <div>
-      <Input
-        type="text"
-        placeholder="Search..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="bg-white w-[300px] border border-blue ml-[20%] "
-      />
+      <div className="text-blue text-3xl font-bold ml-[25%] mb-4">Posts</div>
+      {overview.overview == "no" && (
+        <div className="flex justify-between  ">
+          <div className="w-1/4  ml-[25%]">
+            <Input
+              type="text"
+              placeholder="Search..."
+              name="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => handleSearchOnEnter(e)}
+              className="bg-white border border-blue p-2"
+            />
+          </div>
+          <div className="w-1/7 mr-16">
+            <Select
+              value={selectedFilter}
+              onChange={(e) => handleFilterChange(e.target.value)}
+              className="text-blue bg-white "
+            >
+              {filters.map((filter) => (
+                <Option key={filter.value} value={filter.value}>
+                  {filter.label}
+                </Option>
+              ))}
+            </Select>
+          </div>
+        </div>
+      )}
 
-      <Card className="h-full  mt-8 ml-[20%] w-[80%] ">
+      <Card className="h-full  mt-8 ml-[25%] w-[70%] ">
         <CardBody className="px-0">
           <table className="w-full min-w-max table-auto text-center">
             <thead>
@@ -118,9 +161,18 @@ const Posts = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredRows.map(
+              {tableRows.map(
                 (
-                  { type, username, role_id, date, donation_id, status },
+                  {
+                    type,
+                    username,
+                    role_id,
+                    date,
+                    donation_id,
+                    status,
+                    imageurl,
+                    time,
+                  },
                   index
                 ) => {
                   const isEvenRow = index % 2 === 0;
@@ -138,6 +190,18 @@ const Posts = () => {
                         >
                           {type}
                         </Typography>
+                      </td>
+                      <td
+                        className={classes}
+                        onClick={() => openImageModal(imageurl)}
+                      >
+                        <img
+                          src={imageurl}
+                          alt="Image"
+                          size="small"
+                          color="lightBlue"
+                          className="w-10 h-10 object-cover ml-3 cursor-pointer"
+                        />
                       </td>
                       <td className={classes}>
                         <div className="flex flex-col">
@@ -163,14 +227,21 @@ const Posts = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {date}
+                          {date.split("T")[0]}
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {time}
                         </Typography>
                       </td>
                       <td className={classes}>
                         <Typography
                           variant="small"
-                          color="blue-gray"
-                          className="font-normal"
+                          color={status == "approved" ? "blue" : "blue"}
+                          className="font-medium"
                         >
                           {status}
                         </Typography>
@@ -179,7 +250,7 @@ const Posts = () => {
                       <td className={classes}>
                         <Button
                           color="blue"
-                          className="bg-blue"
+                          className="text-blue  px-2 border"
                           onClick={() => openModal(donation_id)}
                         >
                           Show Details
@@ -199,32 +270,50 @@ const Posts = () => {
             id={selectedPost}
           />
         )}
+        {isImageModalOpen && (
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50  ">
+            <div
+              className="absolute top-0 left-0 w-full h-full bg-white opacity-75"
+              onClick={closeImageModal}
+              style={{ backdropFilter: "blur(10px)" }}
+            />
+            <div className="relative h-[40%] w-[40%] flex justify-center items-center text-center">
+              <img src={selectedImage} alt="Large Image" className="" />
+            </div>
+            <button
+              onClick={closeImageModal}
+              className="w-10 h-10 text-blue absolute top-4 right-4 text-3xl font-semibold"
+            >
+              x
+            </button>
+          </div>
+        )}
       </Card>
-
-      {/* Pagination controls */}
-      <div className="flex justify-end mt-4">
-        <button
-          onClick={() =>
-            setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
-          }
-          disabled={currentPage === 1}
-          className="bg-blue hover:bg-blue-600 text-white mr-4 cursor-pointer px-4 py-2 rounded focus:outline-none"
-        >
-          Previous
-        </button>
-        <span className="mr-4 font-semibold">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() =>
-            setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-          className="ml-4 bg-blue hover:bg-blue-600 text-white cursor-pointer px-4 py-2 rounded focus:outline-none"
-        >
-          Next
-        </button>
-      </div>
+      {overview.overview == "no" && (
+        <div className="flex justify-end mt-4 mr-16">
+          <button
+            onClick={() =>
+              setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+            }
+            disabled={currentPage === 1}
+            className="bg-blue hover:bg-blue-600 text-white mr-4 cursor-pointer px-4 py-2 rounded focus:outline-none"
+          >
+            Previous
+          </button>
+          <span className="mr-4 font-semibold">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="ml-4 bg-blue hover:bg-blue-600 text-white cursor-pointer px-4 py-2 rounded focus:outline-none"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
