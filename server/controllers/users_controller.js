@@ -71,6 +71,7 @@ exports.registerUser = async (req, res) => {
         res.status(201).json({
           message: "User Added Successfully",
           token: token,
+          role_id: user.role_id,
         });
       }
     }
@@ -116,6 +117,7 @@ exports.loginUser = async (req, res) => {
         res.status(200).json({
           message: "Login Successfully",
           token: token,
+          role_id: user.role_id,
         });
       }
     }
@@ -149,7 +151,7 @@ exports.loginUsers = async (req, res) => {
         const token = jwt.sign(payload, secretKey, { expiresIn: "6h" });
 
         return res.status(200).json({
-          existUser,
+          role_id: existUser.role_id,
           logmessage: "User logged in successfully",
           token: token,
         });
@@ -170,7 +172,7 @@ exports.loginUsers = async (req, res) => {
       const token = jwt.sign(payload, secretKey, { expiresIn: "6h" });
 
       return res.status(200).json({
-        user,
+        role_id: user.role_id,
         logmessage: "User added successfully",
         token: token,
       });

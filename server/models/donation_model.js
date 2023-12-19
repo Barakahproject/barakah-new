@@ -3,13 +3,22 @@ const db = require("./db");
 
 module.exports = {
   getDonation: async () => {
-    const query = `select users.user_id, users.username, users.industry, donation.* from donation 
+    try {
+      await db.query("BEGIN");
+      const query = `select users.user_id, users.username, users.industry, donation.* from donation 
     inner join users on donation.user_id = users.user_id
     where donation.is_deleted = false and donation.status = 'approved'
     -- order by date desc ,time desc 
     `;
-    const result = await db.query(query);
-    return result.rows;
+      const result = await db.query(query);
+      const query2 = `update donation set expired = true where expiry_date < $1`;
+      const today = new Date();
+      await db.query(query2, [today]);
+      await db.query("COMMIT");
+      return result.rows;
+    } catch (err) {
+      throw err;
+    }
   },
   getadminDonation: async () => {
     const query = `select *,donation.imageurl from donation 
