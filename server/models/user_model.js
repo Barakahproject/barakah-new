@@ -204,7 +204,7 @@ module.exports = {
     const user = await db.query(userQuery, [email]);
     return user.rows[0];
   },
-  createUsers: async ({ username, email, picture }) => {
+  createGoogle: async ({ username, email, picture }) => {
     const role_id = "3";
     const created_at = new Date();
     const password = "No Access";
