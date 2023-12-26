@@ -263,13 +263,13 @@ module.exports = {
     return user.rows[0];
   },
   partners: async () => {
-    const query = `select username, imageurl from users where partners = true and is_deleted = false`;
+    const query = `select username, logo from users where partners = true and is_deleted = false`;
     const result = await db.query(query);
     return result.rows;
   },
-  postpartners: async (user_id) => {
-    const query = `update users set partners = true where user_id= $1`;
-    const result = await db.query(query, [user_id]);
+  postpartners: async (user_id, logo) => {
+    const query = `update users set partners = true , logo = $2 where user_id= $1`;
+    const result = await db.query(query, [user_id, logo]);
     return result.rows[0];
   },
   countuserdonation: async () => {

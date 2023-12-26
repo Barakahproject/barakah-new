@@ -358,7 +358,16 @@ exports.partners = async (req, res) => {
 exports.postpartners = async (req, res) => {
   const { user_id } = req.body;
   try {
-    await userModel.postpartners(user_id);
+    const file = req.file;
+    if (file) {
+      const fileName = `${Date.now()}_${file.originalname}`;
+
+      const fileurl = await firebase.uploadFileToFirebase(file, fileName);
+
+      req.body.logo = fileurl;
+    }
+
+    await userModel.postpartners(user_id, req.body.logo);
     res.status(200).json({
       message: "partners added successfully",
     });

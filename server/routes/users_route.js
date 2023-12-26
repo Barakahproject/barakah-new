@@ -38,6 +38,7 @@ router.get("/partners", userController.partners);
 router.post(
   "/postpartners",
   verify.authorize([1]),
+  upload.single("image"),
   userController.postpartners
 );
 router.get("/countuserdonation", userController.countuserdonation);
