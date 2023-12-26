@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import Contactus from "./pages/Contactus";
 import Dashboard from "./Admin/Dashboard";
 import Subscription from "./components/Subscription";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <div className="App">
           {window.location.pathname !== "/dashboard" ? <Navbar /> : <></>}
         </div>
+
         <Routes>
           <Route exact path="/" element={<Home />}></Route>
           <Route exact path="/signup" element={<SignUp />}></Route>
@@ -33,6 +35,8 @@ function App() {
 
           <Route exact path="/Subscription" element={<Subscription />}></Route>
         </Routes>
+
+        <Footer />
       </BrowserRouter>
     </AuthProvider>
   );
