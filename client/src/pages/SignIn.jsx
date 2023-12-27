@@ -48,10 +48,11 @@ const SignIn = () => {
             console.log("Server response:", response.data);
 
             const token = response.data.token;
+            const role_id = response.data.role_id;
 
             // Make sure the token is not undefined or null before storing it
             if (token) {
-              login(token);
+              login(token, role_id);
               navigate("/");
             }
 

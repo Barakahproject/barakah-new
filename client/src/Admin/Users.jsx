@@ -45,7 +45,7 @@ const Users = (overview) => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [currentPage, itemsPerPage, searchTerm]);
+  }, [currentPage, itemsPerPage]);
 
   // Handle delete button click
   const handleDelete = (user_id) => {

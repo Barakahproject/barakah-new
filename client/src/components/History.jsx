@@ -47,7 +47,7 @@ const History = (role) => {
   };
 
   return (
-    <div className="relative overflow-x-auto sm:rounded-lg mt-8 flex justify-center ">
+    <div className="relative overflow-x-auto sm:rounded-lg mt-8 flex justify-center mb-20 ">
       <table className="w-[80%] text-sm text-left rtl:text-right text-gray-500 ">
         <thead className="text-md text-blue uppercase bg-[#ececec] ">
           <tr>

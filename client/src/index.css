@@ -44,6 +44,10 @@ body {
   z-index: 10;
 }
 
+.ReactModal__Content{
+  z-index: 10;
+}
+
 .fade-in {
   opacity: 0; /* Start with 0 opacity */
   animation: fadeIn 2s 1s forwards;
