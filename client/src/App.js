@@ -14,6 +14,7 @@ import Contactus from "./pages/Contactus";
 import Dashboard from "./Admin/Dashboard";
 import Subscription from "./components/Subscription";
 import Footer from "./components/Footer";
+import NotFound from "./pages/notFound";
 
 function App() {
   return (
@@ -32,11 +33,12 @@ function App() {
           <Route exact path="/profile" element={<Profile />}></Route>
           <Route exact path="/contactus" element={<Contactus />}></Route>
           <Route exact path="/dashboard" element={<Dashboard />}></Route>
+          <Route path="/*" element={<NotFound />} />
 
           <Route exact path="/Subscription" element={<Subscription />}></Route>
         </Routes>
 
-        <Footer />
+        {window.location.pathname !== "/dashboard" ? <Footer /> : <></>}
       </BrowserRouter>
     </AuthProvider>
   );
