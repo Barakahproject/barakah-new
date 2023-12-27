@@ -45,7 +45,7 @@ const SignIn = () => {
               "http://localhost:5000/logins",
               res.data
             );
-            console.log("Server response:", response.data);
+            console.log("Server response:", response.data.role_id);
 
             const token = response.data.token;
             const role_id = response.data.role_id;
@@ -88,7 +88,7 @@ const SignIn = () => {
         "http://localhost:5000/login",
         postData
       );
-      login(response.data.token);
+      login(response.data.token, response.data.role_id);
       if (response.status === 202) {
         navigate("/dashboard");
       } else {
