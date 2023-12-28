@@ -15,7 +15,11 @@ router.get(
   orderController.getorderid
 );
 router.put("/updateorder/:id", orderController.updateorder);
-router.put("/deleteorder/:id", orderController.deleteorder);
+router.put(
+  "/deleteorder/:id",
+  verify.authorize([1]),
+  orderController.deleteorder
+);
 // router.get("/getorderhistory/:id", orderController.getorderhistory);
 
 module.exports = router;

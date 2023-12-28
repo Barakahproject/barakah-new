@@ -210,8 +210,9 @@ module.exports = {
     const password = "No Access";
     const phone = "00000000";
     const city = "No Access";
+    const industry = "individual";
     const query = `
-    INSERT INTO users (username,email,password,city,phone,role_id,created_at,imageurl) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    INSERT INTO users (username,email,password,city,phone,role_id,created_at,imageurl,industry) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING *`;
 
     const values = [
@@ -223,6 +224,7 @@ module.exports = {
       role_id,
       created_at,
       picture,
+      industry,
     ];
     const user = await db.query(query, values);
     return user.rows[0];

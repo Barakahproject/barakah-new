@@ -3,7 +3,7 @@ const db = require("./db");
 module.exports = {
   getFeedbacks: async () => {
     try {
-      const query = `select feedback.* , users.username
+      const query = `select feedback.* , users.username, users.email
       from feedback 
       inner join users 
       on feedback.user_id = users.user_id 
