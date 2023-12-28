@@ -33,7 +33,7 @@ const Aboutus = () => {
             />
             <img
               class="lg:hidden sm:block hidden w-full"
-              src="https://i.ibb.co/16fPqrg/Rectangle-122-2.png"
+              src={aboutus}
               alt="people discussing on board"
             />
             <img

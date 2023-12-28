@@ -67,7 +67,7 @@ const CheckoutForm = (props) => {
           <p className="text-center text-blue mb-4 font-medium">
             Join our community to sell your surplus food by posting a priced
             post on our website. <br />
-            For just 100 JOD a month, you can subscribe now and ensure no food
+            For just 25 JOD a month, you can subscribe now and ensure no food
             goes to waste.
           </p>
           <form onSubmit={handleSubmit}>

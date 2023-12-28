@@ -11,7 +11,7 @@ const Hero = () => {
     <div className="bg-background w-screen h-screen relative ">
       <div className="flex flex-row justify-items-start pt-10 gap-0">
         <img
-          className="w-[900px] h-[850px] absolute  -top-52 -left-20 "
+          className="w-[900px] h-[850px] absolute  -top-52 -left-20  "
           src={traingle}
           alt="Logo"
         />

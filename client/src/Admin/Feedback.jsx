@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import axios from "axios";
+import Cookies from "js-cookie";
 import {
   Card,
   CardBody,
@@ -30,7 +32,8 @@ const FeedbackTable = () => {
 
   // Handle delete button click
   const handleDelete = (feedback_id) => {
-    // Add your delete logic here
+    const token = Cookies.get("token");
+    axios.defaults.headers.common["Authorization"] = token;
     Axios.put(`http://localhost:5000/deletefeedback/${feedback_id}`)
       .then((response) => {
         // Filter out the deleted feedback from the tableRows state

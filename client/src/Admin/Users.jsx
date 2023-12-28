@@ -49,6 +49,9 @@ const Users = (overview) => {
 
   // Handle delete button click
   const handleDelete = (user_id) => {
+    const token = Cookies.get("token");
+    axios.defaults.headers.common["Authorization"] = token;
+
     Axios.put(`http://localhost:5000/deleteuser/${user_id}`)
       .then((response) => {
         // Filter out the deleted user from the tableRows state

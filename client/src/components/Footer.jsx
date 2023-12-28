@@ -1,11 +1,12 @@
 import React from "react";
 import logo from "../assets/logo.png";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Footer = () => {
   return (
     <>
       <footer className="relative z-5 bg-white  pb-10 pt-20 dark:bg-dark lg:pb-20 lg:pt-[120px] text-blue">
-        <div className="container ml-[10%]">
+        <div className="container ml-[15%]">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4 sm:w-2/3 lg:w-3/12">
               <div className="mb-10 w-full">
@@ -22,8 +23,8 @@ const Footer = () => {
                   />
                 </a>
                 <p className="mb-7 text-base text-body-color dark:text-dark-6">
-                  Sed ut perspiciatis undmnis is iste natus error sit amet
-                  voluptatem totam rem aperiam.
+                  Empowering sustainability, one meal at a time. Connecting
+                  surplus to those in need
                 </p>
                 <p className="flex items-center text-sm font-medium text-dark dark:text-white">
                   <span className="mr-3 text-primary">
@@ -60,23 +61,21 @@ const Footer = () => {
               </div>
             </div>
 
-            <LinkGroup header="Resources">
+            {/* <LinkGroup header="Resources">
               <NavLink link="/#" label="SaaS Development" />
               <NavLink link="/#" label="Our Products" />
               <NavLink link="/#" label="User Flow" />
               <NavLink link="/#" label="User Strategy" />
-            </LinkGroup>
-            <LinkGroup header="Company">
-              <NavLink link="/#" label="About TailGrids" />
-              <NavLink link="/#" label="Contact & Support" />
-              <NavLink link="/#" label="Success History" />
-              <NavLink link="/#" label="Setting & Privacy" />
+            </LinkGroup> */}
+            <LinkGroup header="Pages">
+              <NavLink link="/donations" label="Marketplace" />
+              <NavLink link="/contactus" label="Get in touch" />
+              <NavLink link="/aboutus" label="About Barakah" />
             </LinkGroup>
             <LinkGroup header="Quick Links">
-              <NavLink link="/#" label="Premium Support" />
-              <NavLink link="/#" label="Our Services" />
-              <NavLink link="/#" label="Know Our Team" />
-              <NavLink link="/#" label="Download App" />
+              <NavLink link="/aboutus" label="What we do" />
+              <NavLink link="/donations" label="What we offer" />
+              <NavLink link="/about us" label="FAQ" />
             </LinkGroup>
 
             <div className="w-full px-4 sm:w-1/2 lg:w-3/12">
@@ -139,7 +138,7 @@ const Footer = () => {
                   </a>
                 </div>
                 <p className="text-base text-body-color dark:text-dark-6">
-                  &copy; 2025 TailGrids
+                  &copy; 2024 Barakah
                 </p>
               </div>
             </div>

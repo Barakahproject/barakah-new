@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Details from "./Details";
 import Axios from "axios";
+import axios from "axios";
+import Cookies from "js-cookie";
 import {
   Card,
   CardBody,

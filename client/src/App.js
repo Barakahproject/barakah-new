@@ -20,6 +20,10 @@ import Cookies from "js-cookie"; // Import Cookies
 
 function App() {
   const roleId = Cookies.get("role_id");
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 
   return (
     <AuthProvider>

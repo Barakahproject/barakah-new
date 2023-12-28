@@ -7,7 +7,7 @@ import Partners from "../components/Partners";
 
 const Home = () => {
   return (
-    <div className="bg-background">
+    <div className="bg-background ">
       <Hero />
       <WhatWeDo />
       <Cards />

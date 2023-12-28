@@ -4,6 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import swal from "sweetalert";
 import { FaTimes } from "react-icons/fa";
+import Cookies from "js-cookie";
 
 const Details = ({ showModal, onClose, id }) => {
   const [postData, setPostData] = useState({});
@@ -35,7 +36,8 @@ const Details = ({ showModal, onClose, id }) => {
 
     if (result.isConfirmed) {
       try {
-        // Perform the accept action using Axios
+        const token = Cookies.get("token");
+        axios.defaults.headers.common["Authorization"] = token;
         await axios.put(`http://localhost:5000/approveDonation/${id}`);
         Swal.fire({
           icon: "success",
@@ -66,7 +68,8 @@ const Details = ({ showModal, onClose, id }) => {
 
     if (result.isConfirmed) {
       try {
-        // Perform the reject action using Axios
+        const token = Cookies.get("token");
+        axios.defaults.headers.common["Authorization"] = token;
         await axios.put(`http://localhost:5000/rejectDonation/${id}`);
         Swal.fire({
           icon: "success",

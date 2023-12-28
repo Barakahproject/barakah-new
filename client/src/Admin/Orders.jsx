@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import axios from "axios";
+import Cookies from "js-cookie";
 import {
   Card,
   CardBody,
@@ -53,7 +55,8 @@ const OrdersTable = () => {
 
   // Handle delete button click
   const handleDelete = (user_id) => {
-    // Add your delete logic here
+    const token = Cookies.get("token");
+    axios.defaults.headers.common["Authorization"] = token;
     Axios.put(`http://localhost:5000/deleteuser/${user_id}`)
       .then((response) => {
         console.log(`Deleting user with id ${user_id}`);

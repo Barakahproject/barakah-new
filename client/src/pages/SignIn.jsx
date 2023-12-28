@@ -42,7 +42,7 @@ const SignIn = () => {
 
           try {
             const response = await axios.post(
-              "http://localhost:5000/logins",
+              "http://localhost:5000/loginGoogle",
               res.data
             );
             console.log("Server response:", response.data.role_id);
